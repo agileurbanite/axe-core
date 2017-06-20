@@ -35,12 +35,12 @@ module.exports = function (grunt) {
 	/**
 	 * Test each URL
 	 */
-	function runTestUrls(driver, urls) {
+	function runTestUrls(driver, urls, errors) {
 		var url = urls.shift();
-		var errors = [];
+		errors = errors || [];
 
 		// Give each page enough time
-		driver.manage().timeouts().setScriptTimeout(600);
+		driver.manage().timeouts().setScriptTimeout(60000);
 
 		return driver.get(url)
 		// Get results
@@ -69,7 +69,7 @@ module.exports = function (grunt) {
 		}).then(function () {
 			// Start the next job, if any
 			if (urls.length > 0) {
-				return runTestUrls(driver, urls);
+				return runTestUrls(driver, urls, errors);
 			} else {
 				return Promise.resolve(errors);
 			}
