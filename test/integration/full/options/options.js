@@ -7,7 +7,7 @@ describe('Options', function() {
 			done();
 		} else {
 			frame.addEventListener('load', function () {
-				setTimeout(done, 100);
+				setTimeout(done, 500);
 			});
 		}
 	});
@@ -17,47 +17,19 @@ describe('Options', function() {
 	}
 
 	describe('iframes', function() {
-		it('should include iframes by default', function(done) {
-			var config = {};
-			axe.a11yCheck(document, config, function(results) {
-				try {
-					assert.lengthOf(results.violations, 0, 'violations');
-					assert.lengthOf(results.passes, 1, 'passes');
-					assert.deepEqual(
-						results.passes[0].nodes[0].target,
-						['#myframe', '#target']
-					);
-					assert.deepEqual(
-						results.passes[0].nodes[1].target,
-						['#target']
-					);
-					assert.lengthOf(results.passes[0].nodes, 2, 'results from main and iframe');
-					assert.isTrue(results.passes[0].nodes.some(function(node) {
-						if (node.target.length !== 2) {
-							return false;
-						}
-						return node.target[0] === '#myframe';
-					}), 'couldn\'t find iframe result');
-					done();
-				} catch (e) {
-					done(e);
-				}
-			});
-		});
-
 		it('should include iframes if `iframes` is true', function(done) {
 			var config = { iframes: true };
 			axe.a11yCheck(document, config, function(results) {
 				try {
 					assert.lengthOf(results.violations, 0, 'violations');
 					assert.lengthOf(results.passes, 1, 'passes');
-					assert.lengthOf(results.passes[0].nodes, 2, 'results from main and iframe');
 					assert.isTrue(results.passes[0].nodes.some(function(node) {
 						if (node.target.length !== 2) {
 							return false;
 						}
 						return node.target[0] === '#myframe';
 					}), 'couldn\'t find iframe result');
+					assert.lengthOf(results.passes[0].nodes, 2, 'results from main and iframe');
 					done();
 				} catch (e) {
 					done(e);
@@ -71,13 +43,33 @@ describe('Options', function() {
 				try {
 					assert.lengthOf(results.violations, 0, 'violations');
 					assert.lengthOf(results.passes, 1, 'passes');
-					assert.lengthOf(results.passes[0].nodes, 1, 'results from main frame only');
 					assert.isFalse(results.passes[0].nodes.some(function(node) {
 						if (node.target.length !== 2) {
 							return false;
 						}	
 						return node.target[0] === '#myframe';
 					}), 'unexpectedly found iframe result');
+					assert.lengthOf(results.passes[0].nodes, 1, 'results from main frame only');
+					done();
+				} catch (e) {
+					done(e);
+				}
+			});
+		});
+
+		it('should include iframes by default', function(done) {
+			var config = {};
+			axe.a11yCheck(document, config, function(results) {
+				try {
+					assert.lengthOf(results.violations, 0, 'violations');
+					assert.lengthOf(results.passes, 1, 'passes');
+					assert.isTrue(results.passes[0].nodes.some(function(node) {
+						if (node.target.length !== 2) {
+							return false;
+						}
+						return node.target[0] === '#myframe';
+					}), 'couldn\'t find iframe result');
+					assert.lengthOf(results.passes[0].nodes, 2, 'results from main and iframe');
 					done();
 				} catch (e) {
 					done(e);
