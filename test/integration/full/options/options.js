@@ -7,7 +7,7 @@ describe('Options', function() {
 			done();
 		} else {
 			frame.addEventListener('load', function () {
-				done();
+				setTimeout(done, 100);
 			});
 		}
 	});
@@ -20,9 +20,12 @@ describe('Options', function() {
 		it('should include iframes by default', function(done) {
 			var config = {};
 			axe.a11yCheck(document, config, function(results) {
+				/* global console */
 				try {
 					assert.lengthOf(results.violations, 0, 'violations');
 					assert.lengthOf(results.passes, 1, 'passes');
+
+					console.log(results.passes[0].nodes);
 					assert.lengthOf(results.passes[0].nodes, 2, 'results from main and iframe');
 					assert.isTrue(results.passes[0].nodes.some(function(node) {
 						if (node.target.length !== 2) {

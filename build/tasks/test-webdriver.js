@@ -71,6 +71,7 @@ module.exports = function (grunt) {
 			if (urls.length > 0) {
 				return runTestUrls(driver, urls, errors);
 			} else {
+				driver.quit();
 				return Promise.resolve(errors);
 			}
 		});
